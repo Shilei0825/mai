@@ -5,7 +5,13 @@ import { Container, Eyebrow, Hairline } from "@/components/ui";
 import { BasketPurchase } from "@/components/basket-purchase";
 import { getBasketById } from "@/lib/data";
 import { getCurrentUser } from "@/lib/auth";
-import { formatEventDate, formatPrice } from "@/lib/utils";
+import {
+  formatDateLocalized,
+  getDictionary,
+  getLocale,
+  pickLocalized,
+} from "@/lib/i18n";
+import { formatPrice } from "@/lib/utils";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -23,7 +29,26 @@ export default async function BasketDetailPage({ params }: Props) {
   const { id } = await params;
   const basket = await getBasketById(id);
   if (!basket) notFound();
-  const user = await getCurrentUser();
+  const [user, t, locale] = await Promise.all([
+    getCurrentUser(),
+    getDictionary(),
+    getLocale(),
+  ]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const bAny = basket as any;
+  const name = pickLocalized(basket.name, bAny.name_it, locale);
+  const description = pickLocalized(
+    basket.description,
+    bAny.description_it,
+    locale,
+  );
+  const eventTitle = pickLocalized(
+    basket.event?.title,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (basket.event as any)?.title_it,
+    locale,
+  );
 
   return (
     <>
@@ -33,7 +58,7 @@ export default async function BasketDetailPage({ params }: Props) {
             href="/baskets"
             className="text-[11px] uppercase tracking-[0.22em] text-muted hover:text-wine"
           >
-            ← All baskets
+            {t.basketDetail.backToBaskets}
           </Link>
           <div className="grid lg:grid-cols-12 gap-16 mt-10">
             <div className="lg:col-span-6">
@@ -41,20 +66,20 @@ export default async function BasketDetailPage({ params }: Props) {
                 {basket.image_url ? (
                   <Image
                     src={basket.image_url}
-                    alt={basket.name}
+                    alt={name}
                     fill
                     priority
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-cover"
+                    className="object-cover photo-warm"
                   />
                 ) : basket.event?.hero_image_url ? (
                   <Image
                     src={basket.event.hero_image_url}
-                    alt={basket.name}
+                    alt={name}
                     fill
                     priority
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-cover opacity-95"
+                    className="object-cover opacity-95 photo-warm"
                   />
                 ) : (
                   <div className="h-full w-full bg-ink flex items-center justify-center">
@@ -73,16 +98,18 @@ export default async function BasketDetailPage({ params }: Props) {
             <div className="lg:col-span-6">
               {basket.event && (
                 <p className="text-[11px] uppercase tracking-[0.22em] text-gold">
-                  Paired with {basket.event.title} ·{" "}
-                  {formatEventDate(basket.event.starts_at)}
+                  {t.basketDetail.pairedWith(
+                    eventTitle || "",
+                    formatDateLocalized(basket.event.starts_at, locale),
+                  )}
                 </p>
               )}
               <h1 className="mt-4 font-display text-5xl md:text-6xl leading-[1.05]">
-                {basket.name}
+                {name}
               </h1>
-              {basket.description && (
+              {description && (
                 <p className="mt-5 text-muted leading-relaxed text-lg">
-                  {basket.description}
+                  {description}
                 </p>
               )}
               <p className="mt-8 font-display text-4xl">
@@ -90,11 +117,11 @@ export default async function BasketDetailPage({ params }: Props) {
               </p>
               <p className="text-sm text-muted">
                 {basket.fulfillment_shipping &&
-                  `${formatPrice(basket.shipping_cents)} shipping`}
+                  `${formatPrice(basket.shipping_cents)} ${t.basketDetail.shipping}`}
                 {basket.fulfillment_shipping &&
                   basket.fulfillment_pickup &&
                   " · "}
-                {basket.fulfillment_pickup && "or pickup at the event"}
+                {basket.fulfillment_pickup && t.basketDetail.pickup}
               </p>
 
               <div className="mt-10 bg-cream border border-line p-8">
@@ -110,35 +137,45 @@ export default async function BasketDetailPage({ params }: Props) {
       <section className="py-20">
         <Container>
           <div className="max-w-2xl mx-auto text-center">
-            <Eyebrow>What&apos;s inside</Eyebrow>
+            <Eyebrow>{t.basketDetail.contentsEyebrow}</Eyebrow>
             <h2 className="mt-4 font-display text-4xl">
-              Ten goods from {basket.event?.title ?? "the table"}.
+              {t.basketDetail.contentsTitle(eventTitle || "")}
             </h2>
           </div>
           {basket.items.length === 0 ? (
             <p className="mt-10 text-center text-muted">
-              The basket contents are being finalized.
+              {t.basketDetail.contentsEmpty}
             </p>
           ) : (
             <ul className="mt-12 max-w-3xl mx-auto grid sm:grid-cols-2 gap-x-12 gap-y-4">
-              {basket.items.map((it, i) => (
-                <li
-                  key={it.id}
-                  className="flex gap-5 border-b border-line-soft py-5"
-                >
-                  <span className="font-display text-2xl text-gold tabular-nums w-10">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <p className="font-medium">{it.name}</p>
-                    {it.description && (
-                      <p className="text-sm text-muted leading-snug mt-1">
-                        {it.description}
-                      </p>
-                    )}
-                  </div>
-                </li>
-              ))}
+              {basket.items.map((it, i) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const itAny = it as any;
+                const itName = pickLocalized(it.name, itAny.name_it, locale);
+                const itDesc = pickLocalized(
+                  it.description,
+                  itAny.description_it,
+                  locale,
+                );
+                return (
+                  <li
+                    key={it.id}
+                    className="flex gap-5 border-b border-line-soft py-5"
+                  >
+                    <span className="font-display text-2xl text-gold tabular-nums w-10">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <p className="font-medium">{itName}</p>
+                      {itDesc && (
+                        <p className="text-sm text-muted leading-snug mt-1">
+                          {itDesc}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </Container>

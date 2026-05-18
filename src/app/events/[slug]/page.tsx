@@ -8,11 +8,12 @@ import { BasketPurchase } from "@/components/basket-purchase";
 import { getBasketForEvent, getEventBySlug } from "@/lib/data";
 import { getCurrentUser } from "@/lib/auth";
 import {
-  formatEventDateIt,
-  formatEventTime,
-  formatPrice,
-  toRoman,
-} from "@/lib/utils";
+  formatDateLocalized,
+  getDictionary,
+  getLocale,
+  pickLocalized,
+} from "@/lib/i18n";
+import { formatEventTime, formatPrice, toRoman } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -31,17 +32,38 @@ export default async function EventDetailPage({ params }: Props) {
   const event = await getEventBySlug(slug);
   if (!event) notFound();
 
-  const [basket, user] = await Promise.all([
+  const [basket, user, t, locale] = await Promise.all([
     getBasketForEvent(event.id),
     getCurrentUser(),
+    getDictionary(),
+    getLocale(),
   ]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const eAny = event as any;
+  const title = pickLocalized(event.title, eAny.title_it, locale);
+  const tagline = pickLocalized(event.tagline, eAny.tagline_it, locale);
+  const description = pickLocalized(
+    event.description,
+    eAny.description_it,
+    locale,
+  );
+  const venue = pickLocalized(event.venue, eAny.venue_it, locale);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const bAny = basket as any;
+  const basketName = basket
+    ? pickLocalized(basket.name, bAny?.name_it, locale)
+    : null;
+  const basketDescription = basket
+    ? pickLocalized(basket.description, bAny?.description_it, locale)
+    : null;
 
   const seatsLeft =
     event.capacity != null ? event.capacity - event.tickets_sold : null;
 
   return (
     <>
-      {/* Cinematic editorial hero */}
       <section className="relative h-[100svh] min-h-[760px] max-h-[1100px] w-full overflow-hidden bg-ink text-ivory">
         <div className="absolute inset-0">
           {event.hero_image_url ? (
@@ -61,37 +83,37 @@ export default async function EventDetailPage({ params }: Props) {
 
         <div className="hero-entry-1 absolute top-24 md:top-28 left-6 md:left-12 text-[10px] uppercase tracking-[0.42em] text-ivory/60">
           <Link href="/events" className="hover:text-ivory">
-            ← Tutti gli eventi
+            {t.eventDetail.backToAll}
           </Link>
         </div>
         <div className="hero-entry-1 absolute top-24 md:top-28 right-6 md:right-12 text-[10px] uppercase tracking-[0.42em] text-ivory/60 text-right">
-          {formatEventDateIt(event.starts_at)}
+          {formatDateLocalized(event.starts_at, locale)}
         </div>
 
         <div className="relative h-full flex flex-col justify-end px-6 md:px-12 pb-20 md:pb-28 max-w-[1600px] mx-auto w-full">
           <p className="hero-entry-2 text-[11px] uppercase tracking-[0.42em] text-gold-soft mb-8">
-            La prossima serata · Upcoming
+            {t.eventDetail.upcoming}
           </p>
           <h1 className="hero-entry-3 font-display font-light leading-[0.9] tracking-[-0.025em] text-[clamp(3rem,10vw,10rem)] max-w-[14ch]">
-            {event.title}
+            {title}
           </h1>
-          {event.tagline && (
+          {tagline && (
             <p className="hero-entry-4 mt-8 font-display italic text-2xl md:text-3xl text-ivory/85 max-w-2xl leading-snug">
-              {event.tagline}
+              {tagline}
             </p>
           )}
           <div className="hero-entry-5 mt-12 flex flex-wrap items-baseline gap-x-12 gap-y-4 text-sm text-ivory/70">
-            {event.venue && (
+            {venue && (
               <div>
                 <p className="text-[10px] uppercase tracking-[0.32em] text-gold-soft mb-1">
-                  Luogo
+                  {t.eventDetail.venueLabel}
                 </p>
-                <p className="font-display text-lg">{event.venue}</p>
+                <p className="font-display text-lg">{venue}</p>
               </div>
             )}
             <div>
               <p className="text-[10px] uppercase tracking-[0.32em] text-gold-soft mb-1">
-                Ora
+                {t.eventDetail.timeLabel}
               </p>
               <p className="font-display text-lg">
                 {formatEventTime(event.starts_at)}
@@ -99,17 +121,17 @@ export default async function EventDetailPage({ params }: Props) {
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-[0.32em] text-gold-soft mb-1">
-                Posti
+                {t.eventDetail.seatsLabel}
               </p>
               <p className="font-display text-lg">
                 {seatsLeft && seatsLeft > 0
                   ? `${seatsLeft} / ${event.capacity}`
-                  : "Tutto esaurito"}
+                  : t.upcoming.soldOut}
               </p>
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-[0.32em] text-gold-soft mb-1">
-                Prezzo
+                {t.eventDetail.priceLabel}
               </p>
               <p className="font-display text-lg">
                 {formatPrice(event.ticket_price_cents)}
@@ -119,28 +141,29 @@ export default async function EventDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Body — editorial split */}
       <section className="py-32 md:py-40 px-6 md:px-12">
         <Container className="!px-0">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
             <div className="lg:col-span-7 space-y-12">
               <BlurIn>
                 <p className="text-[10px] uppercase tracking-[0.42em] text-muted mb-8">
-                  §01 · La serata
+                  {t.eventDetail.sectionEvening}
                 </p>
                 <h2 className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(2rem,4vw,3.5rem)] max-w-[18ch]">
-                  What we&apos;ll taste{" "}
-                  <em className="italic text-wine">together.</em>
+                  {t.eventDetail.eveningHeadlineA}{" "}
+                  <em className="italic text-wine">
+                    {t.eventDetail.eveningHeadlineB}
+                  </em>
                 </h2>
               </BlurIn>
               <FadeIn>
-                {event.description ? (
+                {description ? (
                   <p className="dropcap text-[18px] leading-[1.85] text-ink/85 whitespace-pre-line">
-                    {event.description}
+                    {description}
                   </p>
                 ) : (
                   <p className="text-muted italic">
-                    Details will be shared closer to the date.
+                    {t.eventDetail.descriptionFallback}
                   </p>
                 )}
               </FadeIn>
@@ -149,53 +172,67 @@ export default async function EventDetailPage({ params }: Props) {
                 <div className="pt-16">
                   <BlurIn>
                     <p className="text-[10px] uppercase tracking-[0.42em] text-muted mb-8">
-                      §02 · Il cesto della serata
+                      {t.eventDetail.sectionBasket}
                     </p>
                     <h2 className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(2rem,4vw,3.5rem)] max-w-[18ch]">
-                      {basket.name}
+                      {basketName}
                     </h2>
-                    {basket.description && (
+                    {basketDescription && (
                       <p className="mt-5 text-ink/65 leading-relaxed text-lg max-w-xl">
-                        {basket.description}
+                        {basketDescription}
                       </p>
                     )}
                   </BlurIn>
-                  <Stagger className="mt-10 grid sm:grid-cols-2 gap-x-10" step={0.05}>
-                    {basket.items.map((it, i) => (
-                      <StaggerItem
-                        key={it.id}
-                        className="border-b border-line-soft py-5 flex gap-5"
-                      >
-                        <span className="font-display italic text-gold tabular-nums w-8 text-xl">
-                          {toRoman(i + 1)}
-                        </span>
-                        <div>
-                          <p className="font-display text-xl tracking-tight">
-                            {it.name}
-                          </p>
-                          {it.description && (
-                            <p className="text-sm text-muted leading-snug mt-1">
-                              {it.description}
+                  <Stagger
+                    className="mt-10 grid sm:grid-cols-2 gap-x-10"
+                    step={0.05}
+                  >
+                    {basket.items.map((it, i) => {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      const itAny = it as any;
+                      const name = pickLocalized(it.name, itAny.name_it, locale);
+                      const desc = pickLocalized(
+                        it.description,
+                        itAny.description_it,
+                        locale,
+                      );
+                      return (
+                        <StaggerItem
+                          key={it.id}
+                          className="border-b border-line-soft py-5 flex gap-5"
+                        >
+                          <span className="font-display italic text-gold tabular-nums w-8 text-xl">
+                            {toRoman(i + 1)}
+                          </span>
+                          <div>
+                            <p className="font-display text-xl tracking-tight">
+                              {name}
                             </p>
-                          )}
-                        </div>
-                      </StaggerItem>
-                    ))}
+                            {desc && (
+                              <p className="text-sm text-muted leading-snug mt-1">
+                                {desc}
+                              </p>
+                            )}
+                          </div>
+                        </StaggerItem>
+                      );
+                    })}
                   </Stagger>
                 </div>
               )}
             </div>
 
-            {/* Purchase rail */}
             <aside className="lg:col-span-5 space-y-6 lg:sticky lg:top-32 lg:self-start">
               <FadeIn>
                 <div className="bg-cream border border-line p-8">
                   <p className="text-[10px] uppercase tracking-[0.42em] text-gold mb-3">
-                    Riserva un posto
+                    {t.eventDetail.reserveEyebrow}
                   </p>
                   <p className="font-display text-5xl tracking-tight">
                     {formatPrice(event.ticket_price_cents)}
-                    <span className="text-base text-muted ml-2">/ posto</span>
+                    <span className="text-base text-muted ml-2">
+                      / {t.eventDetail.perSeat}
+                    </span>
                   </p>
                   <div className="mt-6">
                     <TicketPurchase event={event} signedIn={!!user} />
@@ -207,7 +244,7 @@ export default async function EventDetailPage({ params }: Props) {
                 <FadeIn delay={0.1}>
                   <div className="bg-ink text-ivory p-8">
                     <p className="text-[10px] uppercase tracking-[0.42em] text-gold-soft mb-3">
-                      Porta il cesto a casa
+                      {t.eventDetail.takeBasketEyebrow}
                     </p>
                     <p className="font-display text-4xl tracking-tight">
                       {formatPrice(basket.price_cents)}
@@ -216,8 +253,8 @@ export default async function EventDetailPage({ params }: Props) {
                       {basket.fulfillment_shipping &&
                         `${formatPrice(basket.shipping_cents)} shipping · `}
                       {basket.fulfillment_pickup
-                        ? "or pickup at the event"
-                        : "shipping only"}
+                        ? t.eventDetail.pickupOrShipping
+                        : t.eventDetail.shippingOnly}
                     </p>
                     <div className="mt-6">
                       <BasketPurchase basket={basket} signedIn={!!user} />
@@ -228,11 +265,11 @@ export default async function EventDetailPage({ params }: Props) {
 
               {!user && (
                 <p className="text-xs text-muted text-center">
-                  You&apos;ll be prompted to{" "}
+                  {t.eventDetail.signInNote}
                   <Link href="/login" className="text-wine underline">
-                    sign in
-                  </Link>{" "}
-                  before payment.
+                    {t.eventDetail.signInLink}
+                  </Link>
+                  {t.eventDetail.signInRest}
                 </p>
               )}
             </aside>

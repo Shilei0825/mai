@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BlurIn, FadeIn, Stagger, StaggerItem } from "@/components/animations";
 import { getChefProfile } from "@/lib/data";
+import { getDictionary, getLocale, pickLocalized } from "@/lib/i18n";
 
 export const metadata = { title: "La Chef · Maimouna Niang" };
 
@@ -20,12 +21,23 @@ export default async function ChefPage() {
     );
   }
 
+  const [t, locale] = await Promise.all([getDictionary(), getLocale()]);
   const portrait = chef.photo_url ?? FALLBACK_PORTRAIT;
   const heroImage = chef.hero_image_url ?? FALLBACK_HERO;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cAny = chef as any;
+  const bio = pickLocalized(chef.bio, cAny.bio_it, locale);
+  const title = pickLocalized(chef.title, cAny.title_it, locale);
+  const signature = pickLocalized(
+    chef.signature_dish,
+    cAny.signature_dish_it,
+    locale,
+  );
+
+  const [firstName, ...restName] = chef.name.split(" ");
 
   return (
     <>
-      {/* Cinematic editorial cover */}
       <section className="relative h-[100svh] min-h-[700px] max-h-[1100px] w-full overflow-hidden bg-ink text-ivory">
         <div className="absolute inset-0">
           <Image
@@ -40,7 +52,7 @@ export default async function ChefPage() {
         </div>
 
         <div className="hero-entry-1 absolute top-24 md:top-28 left-6 md:left-12 text-[10px] uppercase tracking-[0.42em] text-ivory/60">
-          La chef · Portrait
+          {t.chef.titlePrefix}
         </div>
         <div className="hero-entry-1 absolute top-24 md:top-28 right-6 md:right-12 text-[10px] uppercase tracking-[0.42em] text-ivory/60 text-right">
           Mai · MMXXVI
@@ -48,23 +60,22 @@ export default async function ChefPage() {
 
         <div className="relative h-full flex flex-col justify-end px-6 md:px-12 pb-20 md:pb-28 max-w-[1600px] mx-auto w-full">
           <p className="hero-entry-2 text-[11px] uppercase tracking-[0.42em] text-gold-soft mb-8">
-            Meet the founder
+            {t.chef.heroEyebrow}
           </p>
           <h1 className="font-display font-light leading-[0.88] tracking-[-0.025em] text-[clamp(3rem,9vw,9rem)]">
-            <span className="hero-entry-3 block">{chef.name.split(" ")[0]}</span>
+            <span className="hero-entry-3 block">{firstName}</span>
             <span className="hero-entry-4 block italic text-gold-soft">
-              {chef.name.split(" ").slice(1).join(" ")}
+              {restName.join(" ")}
             </span>
           </h1>
-          {chef.title && (
+          {title && (
             <p className="hero-entry-5 mt-8 text-ivory/70 text-[12px] uppercase tracking-[0.32em]">
-              {chef.title}
+              {title}
             </p>
           )}
         </div>
       </section>
 
-      {/* Editorial split — portrait + bio */}
       <section className="py-32 md:py-48 px-6 md:px-12">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
           <FadeIn className="lg:col-span-5">
@@ -79,7 +90,7 @@ export default async function ChefPage() {
             </div>
             {chef.origin && (
               <p className="mt-5 text-[10px] uppercase tracking-[0.42em] text-muted">
-                Origine · {chef.origin}
+                {t.chef.origin} · {chef.origin}
               </p>
             )}
           </FadeIn>
@@ -87,18 +98,20 @@ export default async function ChefPage() {
           <div className="lg:col-span-7 lg:pt-6">
             <BlurIn>
               <p className="text-[10px] uppercase tracking-[0.42em] text-muted mb-8">
-                §01 · Il ritratto
+                {t.chef.portraitSection}
               </p>
               <h2 className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(2.4rem,5vw,4.5rem)] max-w-[15ch]">
-                A kitchen built around{" "}
-                <em className="italic text-wine">a long table.</em>
+                {t.chef.portraitHeadlineA}{" "}
+                <em className="italic text-wine">
+                  {t.chef.portraitHeadlineB}
+                </em>
               </h2>
             </BlurIn>
 
-            {chef.bio && (
+            {bio && (
               <FadeIn delay={0.15} className="mt-12">
                 <p className="dropcap text-[18px] leading-[1.8] text-ink/85 whitespace-pre-line">
-                  {chef.bio}
+                  {bio}
                 </p>
               </FadeIn>
             )}
@@ -106,23 +119,21 @@ export default async function ChefPage() {
             {chef.philosophy && (
               <FadeIn delay={0.25} className="mt-12 border-l-2 border-wine pl-8">
                 <p className="font-display italic text-3xl md:text-4xl text-wine leading-snug">
-                  “{chef.philosophy}”
+                  &ldquo;{chef.philosophy}&rdquo;
                 </p>
                 <p className="mt-3 text-[10px] uppercase tracking-[0.32em] text-muted">
-                  — Maimouna
+                  {t.chef.quoteAttribution}
                 </p>
               </FadeIn>
             )}
 
-            {chef.signature_dish && (
+            {signature && (
               <FadeIn delay={0.3} className="mt-12 grid grid-cols-2 gap-8">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.32em] text-muted">
-                    Piatto firma · Signature
+                    {t.chef.signature}
                   </p>
-                  <p className="mt-2 font-display text-2xl">
-                    {chef.signature_dish}
-                  </p>
+                  <p className="mt-2 font-display text-2xl">{signature}</p>
                 </div>
                 {chef.instagram_handle && (
                   <div>
@@ -145,20 +156,25 @@ export default async function ChefPage() {
         </div>
       </section>
 
-      {/* Certifications */}
       {chef.certifications.length > 0 && (
         <section className="bg-paper py-32 md:py-48 px-6 md:px-12 grain">
           <div className="max-w-7xl mx-auto">
             <BlurIn className="max-w-3xl mb-20">
               <p className="text-[10px] uppercase tracking-[0.42em] text-muted mb-8">
-                §02 · Formazione · Credentials
+                {t.chef.credentialsSection}
               </p>
               <h2 className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(2.4rem,5vw,4.5rem)]">
-                The training behind <em className="italic text-wine">the table.</em>
+                {t.chef.credentialsHeadlineA}{" "}
+                <em className="italic text-wine">
+                  {t.chef.credentialsHeadlineB}
+                </em>
               </h2>
             </BlurIn>
 
-            <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12" step={0.1}>
+            <Stagger
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
+              step={0.1}
+            >
               {chef.certifications.map((c, i) => (
                 <StaggerItem key={c.id}>
                   <article className="group">
@@ -194,14 +210,14 @@ export default async function ChefPage() {
         </section>
       )}
 
-      {/* Closer CTA */}
       <section className="py-32 md:py-48 px-6 md:px-12 text-center">
         <BlurIn>
           <p className="text-[10px] uppercase tracking-[0.42em] text-muted mb-10">
-            §03 · A tavola
+            {t.chef.closerSection}
           </p>
           <h2 className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(2.4rem,6vw,5.5rem)] max-w-3xl mx-auto">
-            Come sit at Maimouna&apos;s <em className="italic text-wine">long table.</em>
+            {t.chef.closerHeadlineA}{" "}
+            <em className="italic text-wine">{t.chef.closerHeadlineB}</em>
           </h2>
         </BlurIn>
         <FadeIn delay={0.2} className="mt-12">
@@ -209,7 +225,7 @@ export default async function ChefPage() {
             href="/events"
             className="group inline-flex items-center gap-3 text-[12px] uppercase tracking-[0.24em] text-ink hover:text-wine transition-colors"
           >
-            <span>Vedi i prossimi eventi</span>
+            <span>{t.chef.closerCta}</span>
             <span className="block h-px w-10 bg-current transition-all duration-700 group-hover:w-24" />
           </Link>
         </FadeIn>
