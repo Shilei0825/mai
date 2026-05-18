@@ -53,18 +53,6 @@ export function AuthForm({ mode }: { mode: Mode }) {
     });
   }
 
-  async function signInWith(provider: "google" | "apple") {
-    setError(null);
-    const supabase = createClient();
-    const { error: oauthErr } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
-    if (oauthErr) setError(oauthErr.message);
-  }
-
   if (sent) {
     return (
       <div className="text-center space-y-4">
@@ -88,32 +76,6 @@ export function AuthForm({ mode }: { mode: Mode }) {
             ? "Sign in to manage your seats and orders."
             : "Create an account to book events and order baskets."}
         </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => signInWith("google")}
-          className="border border-line bg-cream py-3 text-sm uppercase tracking-[0.18em] hover:bg-ivory-2 transition-colors"
-        >
-          Google
-        </button>
-        <button
-          type="button"
-          onClick={() => signInWith("apple")}
-          className="border border-line bg-cream py-3 text-sm uppercase tracking-[0.18em] hover:bg-ivory-2 transition-colors"
-        >
-          Apple
-        </button>
-      </div>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-line" />
-        </div>
-        <div className="relative flex justify-center text-[10px] uppercase tracking-[0.22em]">
-          <span className="px-3 bg-ivory text-muted">or with email</span>
-        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
