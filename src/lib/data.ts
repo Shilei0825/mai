@@ -1,5 +1,34 @@
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
-import type { Basket, BasketItem, Event, Order } from "@/lib/types";
+import type {
+  Basket,
+  BasketItem,
+  ChefCertification,
+  ChefProfile,
+  Event,
+  Order,
+} from "@/lib/types";
+
+export async function getChefProfile(): Promise<
+  (ChefProfile & { certifications: ChefCertification[] }) | null
+> {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createClient();
+  const { data: chef } = await supabase
+    .from("chef_profile")
+    .select("*")
+    .limit(1)
+    .maybeSingle();
+  if (!chef) return null;
+  const { data: certs } = await supabase
+    .from("chef_certifications")
+    .select("*")
+    .eq("chef_id", (chef as ChefProfile).id)
+    .order("position", { ascending: true });
+  return {
+    ...(chef as ChefProfile),
+    certifications: (certs as ChefCertification[]) ?? [],
+  };
+}
 
 export async function getUpcomingEvents(limit = 6): Promise<Event[]> {
   if (!isSupabaseConfigured()) return [];

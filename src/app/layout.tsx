@@ -7,7 +7,8 @@ import { SiteFooter } from "@/components/site-footer";
 const display = Cormorant_Garamond({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s · Mai",
   },
   description:
-    "Mai hosts intimate Italian tastings — wine, chocolate, and food — and curates a small basket of authentic Italian goods to take home from every event.",
+    "Mai hosts intimate Italian tastings — wine, chocolate, and food — and curates a small basket of authentic Italian goods to take home from every event. Dal cuore d'Italia, alla tua tavola.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),

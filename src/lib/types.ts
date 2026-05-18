@@ -70,3 +70,28 @@ export type ShippingAddress = {
   postal_code: string;
   country: string;
 };
+
+export type ChefProfile = {
+  id: string;
+  name: string;
+  title: string | null;
+  bio: string | null;
+  philosophy: string | null;
+  origin: string | null;
+  signature_dish: string | null;
+  photo_url: string | null;
+  hero_image_url: string | null;
+  instagram_handle: string | null;
+  updated_at: string;
+};
+
+export type ChefCertification = {
+  id: string;
+  chef_id: string;
+  name: string;
+  issuer: string | null;
+  year: number | null;
+  image_url: string | null;
+  position: number;
+  created_at: string;
+};

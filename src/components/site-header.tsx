@@ -24,18 +24,21 @@ export async function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-9 text-[13px] uppercase tracking-[0.18em] text-ink-soft">
+        <nav className="hidden md:flex items-center gap-8 text-[12px] uppercase tracking-[0.2em] text-ink-soft">
           <Link href="/events" className="hover:text-wine transition-colors">
-            Events
+            Eventi
           </Link>
           <Link href="/baskets" className="hover:text-wine transition-colors">
-            Baskets
+            Cesti
+          </Link>
+          <Link href="/chef" className="hover:text-wine transition-colors">
+            La Chef
           </Link>
           <Link href="/about" className="hover:text-wine transition-colors">
-            About
+            Storia
           </Link>
           <Link href="/contact" className="hover:text-wine transition-colors">
-            Contact
+            Contatti
           </Link>
         </nav>
 
@@ -57,13 +60,13 @@ export async function SiteHeader() {
           ) : (
             <>
               <Link href="/login" className="hover:text-wine">
-                Sign in
+                Entra
               </Link>
               <Link
                 href="/signup"
                 className="hidden sm:inline-flex items-center px-4 py-2 bg-ink text-ivory hover:bg-wine transition-colors"
               >
-                Reserve
+                Riserva
               </Link>
             </>
           )}

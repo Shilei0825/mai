@@ -1,16 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  /* Mai palette — ivory canvas, ink black, wine accent, soft gold */
+  /* Mai palette — Italian heart */
   --ivory: #f6f1e8;
   --ivory-2: #ece4d4;
   --cream: #faf6ef;
+  --paper: #ede5d2;
   --ink: #0b0b0c;
   --ink-soft: #1a1a1c;
+  --ink-2: #16110d;
   --wine: #6b1a2a;
   --wine-deep: #4a0f1c;
+  --wine-soft: #8a2a3c;
   --gold: #b8945a;
   --gold-soft: #c9a96e;
+  --gold-deep: #8a6a3a;
+  --terracotta: #b66e4f;
+  --olive: #75704a;
+  --cypress: #3d4e3c;
+  --saffron: #d9a85a;
   --muted: #6b6258;
   --line: rgba(11, 11, 12, 0.12);
   --line-soft: rgba(11, 11, 12, 0.07);
@@ -25,17 +33,26 @@
   --color-ivory: var(--ivory);
   --color-ivory-2: var(--ivory-2);
   --color-cream: var(--cream);
+  --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
+  --color-ink-2: var(--ink-2);
   --color-wine: var(--wine);
   --color-wine-deep: var(--wine-deep);
+  --color-wine-soft: var(--wine-soft);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+  --color-gold-deep: var(--gold-deep);
+  --color-terracotta: var(--terracotta);
+  --color-olive: var(--olive);
+  --color-cypress: var(--cypress);
+  --color-saffron: var(--saffron);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-line-soft: var(--line-soft);
 
   --font-display: var(--font-display);
+  --font-script: var(--font-script);
   --font-sans: var(--font-sans);
 }
 
@@ -56,6 +73,11 @@ body {
 .font-display {
   font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
   letter-spacing: -0.01em;
+  font-feature-settings: "lnum", "kern";
+}
+
+.font-script {
+  font-family: var(--font-script), "Dancing Script", cursive;
 }
 
 ::selection {
@@ -63,7 +85,7 @@ body {
   color: var(--ivory);
 }
 
-/* Hairline divider with gold tick */
+/* Decorative hairline with gold tick */
 .hairline {
   position: relative;
   height: 1px;
@@ -80,9 +102,152 @@ body {
   transform: translateX(-50%) rotate(45deg);
 }
 
+/* Drop cap */
+.dropcap::first-letter {
+  font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  float: left;
+  font-size: 4.5em;
+  line-height: 0.85;
+  padding: 6px 12px 0 0;
+  color: var(--wine);
+}
+
+/* Film grain noise overlay (applied via .grain wrapper) */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='180' height='180' filter='url(%23n)' opacity='.9'/></svg>");
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+.grain-strong::after {
+  opacity: 0.18;
+}
+
+/* Vintage photo treatment */
+.photo-vintage {
+  filter: saturate(0.85) contrast(1.05);
+}
+.photo-warm {
+  filter: saturate(0.95) contrast(1.05) sepia(0.08);
+}
+
 /* Smooth focus ring */
 *:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+/* Reveal-on-scroll baseline */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Hero entry animations — CSS so they work without waiting on JS hydration */
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.hero-entry-1 {
+  animation: hero-fade 1.6s ease-out 0.3s both;
+}
+.hero-entry-2 {
+  animation: hero-fade-up 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
+}
+.hero-entry-3 {
+  animation: hero-fade-up 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.8s both;
+}
+.hero-entry-4 {
+  animation: hero-fade-up 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.05s both;
+}
+.hero-entry-5 {
+  animation: hero-fade-up 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.3s both;
+}
+.hero-entry-6 {
+  animation: hero-fade 1.6s ease-out 1.8s both;
+}
+
+/* Marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  display: flex;
+  animation: marquee 60s linear infinite;
+  width: max-content;
+}
+
+/* Ken Burns slow zoom */
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.1) translate(-1%, -1%);
+  }
+}
+.kenburns {
+  animation: kenburns 22s ease-in-out infinite alternate;
+}
+
+/* Subtle floating */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+/* Horizontal divider with gold flourish (used inline) */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--gold);
+}
+.ornament-divider::before,
+.ornament-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
 }
