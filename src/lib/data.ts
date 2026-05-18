@@ -5,8 +5,19 @@ import type {
   ChefCertification,
   ChefProfile,
   Event,
+  HeroClip,
   Order,
 } from "@/lib/types";
+
+export async function getHeroClips(): Promise<HeroClip[]> {
+  if (!isSupabaseConfigured()) return [];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("hero_clips")
+    .select("*")
+    .order("position", { ascending: true });
+  return (data as HeroClip[]) ?? [];
+}
 
 export async function getChefProfile(): Promise<
   (ChefProfile & { certifications: ChefCertification[] }) | null

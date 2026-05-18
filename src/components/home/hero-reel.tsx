@@ -4,72 +4,78 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import type { HeroClip } from "@/lib/types";
 
-type Clip = {
-  it: string;
-  en: string;
-  poster: string;
-  video: string;
-};
-
-export const HERO_CLIPS: Clip[] = [
+// Fallback set used when the hero_clips table is empty.
+const FALLBACK_CLIPS: HeroClip[] = [
   {
-    it: "Vino",
-    en: "Wine",
-    poster:
+    id: "fallback-wine",
+    label_en: "Wine",
+    label_it: "Vino",
+    poster_url:
       "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=2400&q=90",
-    video:
-      "https://videos.pexels.com/video-files/4109248/4109248-uhd_2560_1440_24fps.mp4",
+    video_url: "",
+    position: 1,
+    created_at: "",
   },
   {
-    it: "Cioccolato",
-    en: "Chocolate",
-    poster:
+    id: "fallback-chocolate",
+    label_en: "Chocolate",
+    label_it: "Cioccolato",
+    poster_url:
       "https://images.unsplash.com/photo-1610450949065-1f2841536c88?w=2400&q=90",
-    video:
-      "https://videos.pexels.com/video-files/4259053/4259053-uhd_2732_1440_25fps.mp4",
+    video_url: "",
+    position: 2,
+    created_at: "",
   },
   {
-    it: "Formaggio",
-    en: "Cheese",
-    poster:
+    id: "fallback-cheese",
+    label_en: "Cheese",
+    label_it: "Formaggio",
+    poster_url:
       "https://images.unsplash.com/photo-1452195100486-9cc805987862?w=2400&q=90",
-    video:
-      "https://videos.pexels.com/video-files/4040635/4040635-uhd_2560_1440_25fps.mp4",
+    video_url: "",
+    position: 3,
+    created_at: "",
   },
   {
-    it: "Pasta",
-    en: "Pasta",
-    poster:
+    id: "fallback-pasta",
+    label_en: "Pasta",
+    label_it: "Pasta",
+    poster_url:
       "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=2400&q=90",
-    video:
-      "https://videos.pexels.com/video-files/4253334/4253334-uhd_2560_1440_25fps.mp4",
+    video_url: "",
+    position: 4,
+    created_at: "",
   },
 ];
 
 const CYCLE_MS = 6500;
 
 export function HeroReel({
+  clips,
   showCaption = true,
   locale = "en",
 }: {
+  clips: HeroClip[];
   showCaption?: boolean;
   locale?: "en" | "it";
 }) {
+  const list = clips.length > 0 ? clips : FALLBACK_CLIPS;
   const [idx, setIdx] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
+    if (list.length <= 1) return;
     const timer = window.setInterval(() => {
-      setIdx((i) => (i + 1) % HERO_CLIPS.length);
+      setIdx((i) => (i + 1) % list.length);
     }, CYCLE_MS);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [list.length]);
 
   useEffect(() => {
-    // Reset the active video so it always starts playing from frame 0
     const v = videoRefs.current[idx];
-    if (v) {
+    if (v && v.src) {
       try {
         v.currentTime = 0;
         const p = v.play();
@@ -80,76 +86,74 @@ export function HeroReel({
     }
   }, [idx]);
 
-  const current = HERO_CLIPS[idx];
+  const current = list[idx];
 
   return (
     <>
-      {/* Layered background — each clip keeps its DOM node so the video continues to load */}
       <div className="absolute inset-0">
-        {HERO_CLIPS.map((clip, i) => (
+        {list.map((clip, i) => (
           <motion.div
-            key={clip.video}
+            key={clip.id}
             initial={false}
             animate={{ opacity: i === idx ? 1 : 0 }}
             transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0"
           >
             <Image
-              src={clip.poster}
+              src={clip.poster_url}
               alt=""
               fill
               priority={i === 0}
               sizes="100vw"
-              className="object-cover photo-warm"
+              className="object-cover photo-warm kenburns"
             />
-            <video
-              ref={(el) => {
-                videoRefs.current[i] = el;
-              }}
-              className="absolute inset-0 h-full w-full object-cover"
-              autoPlay={i === 0}
-              muted
-              loop
-              playsInline
-              preload={i === 0 ? "auto" : "metadata"}
-              poster={clip.poster}
-            >
-              <source src={clip.video} type="video/mp4" />
-            </video>
+            {clip.video_url && (
+              <video
+                ref={(el) => {
+                  videoRefs.current[i] = el;
+                }}
+                className="absolute inset-0 h-full w-full object-cover"
+                autoPlay={i === 0}
+                muted
+                loop
+                playsInline
+                preload={i === 0 ? "auto" : "metadata"}
+                poster={clip.poster_url}
+              >
+                <source src={clip.video_url} type="video/mp4" />
+              </video>
+            )}
           </motion.div>
         ))}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,12,0.55)_0%,rgba(11,11,12,0.25)_45%,rgba(11,11,12,0.85)_100%)]" />
       </div>
 
-      {/* Tiny caption + index dots */}
-      {showCaption && (
-        <div className="absolute bottom-28 md:bottom-32 right-6 md:right-12 flex items-center gap-5 z-10 text-ivory">
+      {showCaption && list.length > 1 && (
+        <div className="absolute top-44 md:top-48 left-1/2 -translate-x-1/2 z-10 text-ivory flex items-center gap-3">
+          <span className="text-[10px] uppercase tracking-[0.42em] text-gold-soft">
+            {locale === "it" ? "In tavola" : "On the table"}
+          </span>
           <AnimatePresence mode="wait">
-            <motion.div
-              key={current.en}
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -12 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-right"
+            <motion.span
+              key={current.id}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display italic text-lg md:text-xl"
             >
-              <p className="text-[10px] uppercase tracking-[0.42em] text-gold-soft">
-                {locale === "it" ? "In tavola" : "Now showing"}
-              </p>
-              <p className="mt-1 font-display italic text-2xl md:text-3xl">
-                {locale === "it" ? current.it : current.en}
-              </p>
-            </motion.div>
+              {locale === "it"
+                ? current.label_it || current.label_en
+                : current.label_en}
+            </motion.span>
           </AnimatePresence>
-          <div className="flex flex-col gap-2">
-            {HERO_CLIPS.map((_, i) => (
+          <div className="ml-2 flex items-center gap-1.5">
+            {list.map((_, i) => (
               <span
                 key={i}
                 className={cn(
                   "block h-px transition-all duration-700",
-                  i === idx
-                    ? "bg-gold-soft w-8"
-                    : "bg-ivory/35 w-4",
+                  i === idx ? "bg-gold-soft w-5" : "bg-ivory/30 w-2.5",
                 )}
               />
             ))}

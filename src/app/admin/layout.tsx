@@ -16,9 +16,10 @@ export default async function AdminLayout({
 
   const links = [
     { href: "/admin", label: "Overview" },
-    { href: "/admin/events", label: "Events" },
-    { href: "/admin/baskets", label: "Baskets" },
+    { href: "/admin/events", label: "Reservations" },
+    { href: "/admin/baskets", label: "Products" },
     { href: "/admin/chef", label: "Chef" },
+    { href: "/admin/hero-clips", label: "Hero reel" },
     { href: "/admin/orders", label: "Orders" },
   ];
 

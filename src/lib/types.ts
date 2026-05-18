@@ -95,3 +95,13 @@ export type ChefCertification = {
   position: number;
   created_at: string;
 };
+
+export type HeroClip = {
+  id: string;
+  label_en: string;
+  label_it: string | null;
+  video_url: string;
+  poster_url: string;
+  position: number;
+  created_at: string;
+};
