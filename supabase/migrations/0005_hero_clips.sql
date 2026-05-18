@@ -56,7 +56,7 @@ values
     'Pasta',
     'Pasta',
     'https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/videos/pasta.mp4',
-    'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=2400&q=90',
+    'https://images.unsplash.com/photo-1551462147-37885acc36f1?w=2400&q=90',
     4
   )
 on conflict do nothing;
