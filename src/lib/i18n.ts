@@ -16,6 +16,29 @@ type Dict = {
     motto: string;
     mottoTranslation: string;
   };
+  offerings: {
+    section: string;
+    headline: string;
+    intro: string;
+    card1: {
+      eyebrow: string;
+      title: string;
+      blurb: string;
+      bullet1: string;
+      bullet2: string;
+      bullet3: string;
+      cta: string;
+    };
+    card2: {
+      eyebrow: string;
+      title: string;
+      blurb: string;
+      bullet1: string;
+      bullet2: string;
+      bullet3: string;
+      cta: string;
+    };
+  };
   nav: {
     events: string;
     baskets: string;
@@ -181,9 +204,35 @@ const en: Dict = {
     motto: "Dal cuore d'Italia, alla tua tavola.",
     mottoTranslation: "From the heart of Italy, to your table.",
   },
+  offerings: {
+    section: "What we offer",
+    headline: "Two ways to taste Italy.",
+    intro:
+      "Mai is two things: a private Italian tasting evening you can reserve a seat at — and the curated basket of ten Italian goods every guest takes home that night, also available to order separately.",
+    card1: {
+      eyebrow: "Reservations",
+      title: "Italian tasting evenings.",
+      blurb:
+        "An intimate, sixteen-seat tasting hosted by Chef Maimouna. Wine, cheese, chocolate, and food, sourced from small Italian producers.",
+      bullet1: "16 seats, one long table",
+      bullet2: "5–6 wines + paired food",
+      bullet3: "Included basket to take home",
+      cta: "Reserve a seat",
+    },
+    card2: {
+      eyebrow: "Products",
+      title: "Italian product baskets.",
+      blurb:
+        "Ten authentic Italian goods, hand-picked for each tasting. Order yours to pick up at the event or ship to your door.",
+      bullet1: "Wine · cheese · chocolate · oil",
+      bullet2: "Pickup at the event or ship",
+      bullet3: "A new basket each evening",
+      cta: "Browse products",
+    },
+  },
   nav: {
-    events: "Events",
-    baskets: "Baskets",
+    events: "Reservations",
+    baskets: "Products",
     chef: "The Chef",
     story: "Story",
     contact: "Contact",
@@ -276,21 +325,21 @@ const en: Dict = {
     cta: "Reserve a seat",
   },
   events: {
-    pageEyebrow: "Calendar",
-    pageTitle: "Upcoming evenings at Mai.",
+    pageEyebrow: "Reservations",
+    pageTitle: "Reserve a seat at the table.",
     pageBlurb:
-      "Each tasting is a single seating with a small group. Reserve early — seats are limited, and every event introduces a different basket.",
+      "Each tasting is a single seating with a small group. Reserve early — seats are limited, and every evening introduces a different product basket.",
     emptyMessage:
-      "The next event will be announced soon. Sign up to be the first to know.",
+      "The next tasting will be announced soon. Sign up to be the first to know.",
     perSeat: "per seat",
   },
   basketsList: {
-    eyebrow: "Curated baskets",
-    title: "Ten Italian goods, hand-picked for each evening.",
+    eyebrow: "Italian product baskets",
+    title: "Ten Italian goods, hand-picked for each tasting.",
     blurb:
-      "Every Mai event has its own basket — the same ten items every guest tasted that night. Buy alongside your seat, or order to ship while supplies last.",
-    empty: "The next basket is being assembled.",
-    forEvent: (title, date) => `For ${title} · ${date}`,
+      "Every Mai tasting has its own product basket — the same ten items every guest tasted that night. Buy alongside your seat, or order to ship while supplies last.",
+    empty: "The next product basket is being assembled.",
+    forEvent: (title, date) => `From ${title} · ${date}`,
   },
   basketDetail: {
     pairedWith: (title, date) => `Paired with ${title} · ${date}`,
@@ -366,9 +415,35 @@ const it: Dict = {
     motto: "Dal cuore d'Italia, alla tua tavola.",
     mottoTranslation: "Dal cuore d'Italia, alla tua tavola.",
   },
+  offerings: {
+    section: "Cosa offriamo",
+    headline: "Due modi per assaggiare l'Italia.",
+    intro:
+      "Mai è due cose: una serata privata di degustazione italiana a cui puoi riservare un posto — e il cesto curato di dieci eccellenze italiane che ogni ospite porta a casa, disponibile anche da ordinare separatamente.",
+    card1: {
+      eyebrow: "Prenotazioni",
+      title: "Serate di degustazione italiana.",
+      blurb:
+        "Una degustazione intima di sedici posti curata dalla Chef Maimouna. Vino, formaggio, cioccolato e cucina, da piccoli produttori italiani.",
+      bullet1: "16 posti, una sola tavolata",
+      bullet2: "5–6 vini + cibo abbinato",
+      bullet3: "Cesto incluso da portare a casa",
+      cta: "Riserva un posto",
+    },
+    card2: {
+      eyebrow: "Prodotti",
+      title: "Cesti di prodotti italiani.",
+      blurb:
+        "Dieci eccellenze italiane autentiche, scelte per ogni serata. Ordina il tuo da ritirare all'evento o farti spedire.",
+      bullet1: "Vino · formaggio · cioccolato · olio",
+      bullet2: "Ritiro all'evento o spedizione",
+      bullet3: "Un cesto nuovo per ogni serata",
+      cta: "Esplora i prodotti",
+    },
+  },
   nav: {
-    events: "Eventi",
-    baskets: "Cesti",
+    events: "Prenotazioni",
+    baskets: "Prodotti",
     chef: "La Chef",
     story: "Storia",
     contact: "Contatti",
@@ -461,21 +536,21 @@ const it: Dict = {
     cta: "Riserva un posto",
   },
   events: {
-    pageEyebrow: "Calendario",
-    pageTitle: "Le prossime serate a Mai.",
+    pageEyebrow: "Prenotazioni",
+    pageTitle: "Riserva un posto a tavola.",
     pageBlurb:
-      "Ogni serata è un'unica tavolata con un piccolo gruppo. Riserva presto — i posti sono limitati e ogni evento porta un cesto diverso.",
+      "Ogni serata è un'unica tavolata con un piccolo gruppo. Riserva presto — i posti sono limitati e ogni evento porta un cesto di prodotti diverso.",
     emptyMessage:
       "La prossima serata verrà annunciata presto. Iscriviti per essere il primo a saperlo.",
     perSeat: "a posto",
   },
   basketsList: {
-    eyebrow: "Cesti curati",
+    eyebrow: "Prodotti italiani in cesto",
     title: "Dieci eccellenze italiane, scelte per ogni serata.",
     blurb:
-      "Ogni evento di Mai ha il suo cesto — le stesse dieci eccellenze che ogni ospite ha assaggiato. Compra insieme al posto, o ordina per spedizione finché disponibile.",
+      "Ogni serata di Mai ha il suo cesto di prodotti — le stesse dieci eccellenze che ogni ospite ha assaggiato. Compra insieme al posto, o ordina per spedizione finché disponibile.",
     empty: "Il prossimo cesto è in preparazione.",
-    forEvent: (title, date) => `Per ${title} · ${date}`,
+    forEvent: (title, date) => `Da ${title} · ${date}`,
   },
   basketDetail: {
     pairedWith: (title, date) => `Abbinato a ${title} · ${date}`,

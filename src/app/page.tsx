@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/hero";
+import { Offerings } from "@/components/home/offerings";
 import { Benvenuti } from "@/components/home/benvenuti";
 import { Regioni } from "@/components/home/regioni";
 import { Upcoming } from "@/components/home/upcoming";
@@ -15,6 +16,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <Offerings />
       <Benvenuti />
       <Regioni />
       <Upcoming events={events} />
