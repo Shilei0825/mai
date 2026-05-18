@@ -130,6 +130,24 @@ alter table public.baskets enable row level security;
 alter table public.basket_items enable row level security;
 alter table public.orders enable row level security;
 
+-- Helper: bypasses RLS on `profiles` so policies on `profiles` (and on tables
+-- whose policies reference profiles) don't recurse on themselves.
+create or replace function public.is_admin(uid uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select coalesce(
+    (select role from public.profiles where id = uid),
+    'customer'
+  ) = 'admin';
+$$;
+
+revoke all on function public.is_admin(uuid) from public;
+grant execute on function public.is_admin(uuid) to anon, authenticated;
+
 -- profiles: each user reads/updates their own; admins read all.
 drop policy if exists "profiles self read" on public.profiles;
 create policy "profiles self read" on public.profiles
@@ -141,9 +159,7 @@ create policy "profiles self update" on public.profiles
 
 drop policy if exists "profiles admin read" on public.profiles;
 create policy "profiles admin read" on public.profiles
-  for select using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  );
+  for select using (public.is_admin(auth.uid()));
 
 -- events: everyone reads published; admins do everything.
 drop policy if exists "events public read" on public.events;
@@ -152,11 +168,8 @@ create policy "events public read" on public.events
 
 drop policy if exists "events admin all" on public.events;
 create policy "events admin all" on public.events
-  for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  );
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 -- baskets: public reads (for any event row visible to user).
 drop policy if exists "baskets public read" on public.baskets;
@@ -165,11 +178,8 @@ create policy "baskets public read" on public.baskets
 
 drop policy if exists "baskets admin all" on public.baskets;
 create policy "baskets admin all" on public.baskets
-  for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  );
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 -- basket_items: public read; admins write.
 drop policy if exists "basket_items public read" on public.basket_items;
@@ -178,11 +188,8 @@ create policy "basket_items public read" on public.basket_items
 
 drop policy if exists "basket_items admin all" on public.basket_items;
 create policy "basket_items admin all" on public.basket_items
-  for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  );
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 -- orders: users see their own; admins see all. Inserts/updates happen via
 -- server actions using the service-role key, which bypasses RLS.
@@ -192,8 +199,5 @@ create policy "orders user read" on public.orders
 
 drop policy if exists "orders admin all" on public.orders;
 create policy "orders admin all" on public.orders
-  for all using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  ) with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
-  );
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
