@@ -17,7 +17,7 @@ const REGIONS = [
     taglineEn: "Olive oil. Pecorino. Chianti.",
     taglineIt: "Olio. Pecorino. Chianti.",
     image:
-      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=1600&q=90",
+      "https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/images/toscana-cypress.jpg",
   },
   {
     name: "Sicilia",

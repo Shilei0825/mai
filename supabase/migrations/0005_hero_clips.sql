@@ -26,30 +26,31 @@ create policy "hero_clips admin all" on public.hero_clips
   for all using (public.is_admin(auth.uid()))
   with check (public.is_admin(auth.uid()));
 
--- Seed four clips. The video URLs point at the project's own Supabase Storage
--- bucket (videos/<name>.mp4, public). Replace via /admin/hero-clips with your
--- own real Italian food MP4s when ready — upload to the same bucket.
+-- Seed four clips. Videos and posters are hosted in the project's own
+-- Supabase Storage (public buckets: videos/ and images/). Replace via
+-- /admin/hero-clips with your own footage when ready — upload to the
+-- same buckets in the Supabase dashboard.
 insert into public.hero_clips (label_en, label_it, video_url, poster_url, position)
 values
   (
     'Wine',
     'Vino',
     'https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/videos/wine.mp4',
-    'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=2400&q=90',
+    'https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/images/wine-poster.jpg',
     1
   ),
   (
     'Chocolate',
     'Cioccolato',
     'https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/videos/chocolate.mp4',
-    'https://images.unsplash.com/photo-1610450949065-1f2841536c88?w=2400&q=90',
+    'https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/images/chocolate-poster.jpg',
     2
   ),
   (
     'Cheese',
     'Formaggio',
     'https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/videos/cheese.mp4',
-    'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=2400&q=90',
+    'https://vgbuycqryudvdhgroajv.supabase.co/storage/v1/object/public/images/cheese-poster.jpg',
     3
   ),
   (
