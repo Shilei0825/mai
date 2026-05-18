@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { HeroClip } from "@/lib/types";
@@ -55,7 +55,6 @@ const CYCLE_MS = 6500;
 export function HeroReel({
   clips,
   showCaption = true,
-  locale = "en",
 }: {
   clips: HeroClip[];
   showCaption?: boolean;
@@ -84,8 +83,6 @@ export function HeroReel({
       // ignore
     }
   }, [idx]);
-
-  const current = list[idx];
 
   return (
     <>
@@ -128,35 +125,16 @@ export function HeroReel({
       </div>
 
       {showCaption && list.length > 1 && (
-        <div className="absolute top-44 md:top-48 left-1/2 -translate-x-1/2 z-10 text-ivory flex items-center gap-3">
-          <span className="text-[10px] uppercase tracking-[0.42em] text-gold-soft">
-            {locale === "it" ? "In tavola" : "On the table"}
-          </span>
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={current.id}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display italic text-lg md:text-xl"
-            >
-              {locale === "it"
-                ? current.label_it || current.label_en
-                : current.label_en}
-            </motion.span>
-          </AnimatePresence>
-          <div className="ml-2 flex items-center gap-1.5">
-            {list.map((_, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "block h-px transition-all duration-700",
-                  i === idx ? "bg-gold-soft w-5" : "bg-ivory/30 w-2.5",
-                )}
-              />
-            ))}
-          </div>
+        <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
+          {list.map((_, i) => (
+            <span
+              key={i}
+              className={cn(
+                "block h-px transition-all duration-700",
+                i === idx ? "bg-gold-soft w-5" : "bg-ivory/30 w-2.5",
+              )}
+            />
+          ))}
         </div>
       )}
     </>
