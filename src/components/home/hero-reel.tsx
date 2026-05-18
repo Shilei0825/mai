@@ -75,14 +75,13 @@ export function HeroReel({
 
   useEffect(() => {
     const v = videoRefs.current[idx];
-    if (v && v.src) {
-      try {
-        v.currentTime = 0;
-        const p = v.play();
-        if (p && typeof p.catch === "function") p.catch(() => {});
-      } catch {
-        // ignore
-      }
+    if (!v) return;
+    try {
+      v.currentTime = 0;
+      const p = v.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch {
+      // ignore
     }
   }, [idx]);
 
