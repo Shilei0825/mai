@@ -15,6 +15,8 @@ import { formatPrice } from "@/lib/utils";
 
 type Props = { params: Promise<{ id: string }> };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const basket = await getBasketById(id);

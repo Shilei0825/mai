@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+// Build marker — bumped any time we ship hero/content changes so you can
+// confirm which version your browser is rendering vs. what's deployed.
+const BUILD_TAG = "build-2026-05-18-pasta-board";
+
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
@@ -76,7 +80,12 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-ivory/10">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ivory/50">
-          <p>© {year} Mai. All rights reserved.</p>
+          <p>
+            © {year} Mai. All rights reserved.{" "}
+            <span className="ml-2 text-ivory/30 font-mono">
+              {BUILD_TAG}
+            </span>
+          </p>
           <p className="italic font-display text-base text-gold-soft">
             Dal cuore d&apos;Italia, alla tua tavola.
           </p>

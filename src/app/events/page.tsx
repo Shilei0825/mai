@@ -10,6 +10,8 @@ import {
 } from "@/lib/i18n";
 import { formatEventTime, formatPrice } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Upcoming Events" };
 
 export default async function EventsPage() {

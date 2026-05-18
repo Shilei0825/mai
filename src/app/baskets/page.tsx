@@ -10,6 +10,8 @@ import {
 } from "@/lib/i18n";
 import { formatPrice } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Italian Baskets" };
 
 export default async function BasketsPage() {

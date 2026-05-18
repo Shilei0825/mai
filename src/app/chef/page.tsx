@@ -4,6 +4,8 @@ import { BlurIn, FadeIn, Stagger, StaggerItem } from "@/components/animations";
 import { getChefProfile } from "@/lib/data";
 import { getDictionary, getLocale, pickLocalized } from "@/lib/i18n";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "La Chef · Maimouna Niang" };
 
 const FALLBACK_PORTRAIT =

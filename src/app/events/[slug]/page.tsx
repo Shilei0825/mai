@@ -17,6 +17,8 @@ import { formatEventTime, formatPrice, toRoman } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string }> };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const event = await getEventBySlug(slug);

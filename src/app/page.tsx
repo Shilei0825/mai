@@ -8,6 +8,12 @@ import { TheBasket } from "@/components/home/the-basket";
 import { Closer } from "@/components/home/closer";
 import { getChefProfile, getUpcomingEvents } from "@/lib/data";
 
+// Always render on request so the latest hero_clips / events from Supabase
+// show immediately. Without this Next can statically prerender at build time
+// and freeze whatever DB state existed then.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Home() {
   const [events, chef] = await Promise.all([
     getUpcomingEvents(3),
