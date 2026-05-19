@@ -37,6 +37,15 @@ export default async function BasketsPage() {
           <p className="mt-6 text-muted text-lg leading-relaxed">
             {t.basketsList.blurb}
           </p>
+          <div className="mt-8">
+            <Link
+              href="/baskets/build"
+              className="inline-flex items-center gap-2 border border-ink text-ink px-7 py-4 text-[12px] uppercase tracking-[0.24em] hover:bg-ink hover:text-ivory transition-colors"
+            >
+              <span>Build your own basket</span>
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
         </Container>
       </section>
 

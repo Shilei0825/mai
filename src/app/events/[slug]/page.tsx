@@ -236,8 +236,18 @@ export default async function EventDetailPage({ params }: Props) {
                       / {t.eventDetail.perSeat}
                     </span>
                   </p>
+                  {basket && (
+                    <p className="mt-4 text-sm text-muted leading-relaxed">
+                      Includes one Mai Basket per seat — free. Pick it up at the
+                      event or ship it home.
+                    </p>
+                  )}
                   <div className="mt-6">
-                    <TicketPurchase event={event} signedIn={!!user} />
+                    <TicketPurchase
+                      event={event}
+                      signedIn={!!user}
+                      hasBundledBasket={!!basket}
+                    />
                   </div>
                 </div>
               </FadeIn>
