@@ -34,7 +34,6 @@ export const metadata: Metadata = {
       "Intimate Italian wine, chocolate & food tastings. Take a curated basket home.",
     type: "website",
   },
-  icons: { icon: "/mai-logo.png" },
 };
 
 export default function RootLayout({
