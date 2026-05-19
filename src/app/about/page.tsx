@@ -26,8 +26,8 @@ export default function AboutPage() {
                   <Image
                     src="/mai-logo.png"
                     alt="Mai"
-                    width={220}
-                    height={220}
+                    width={320}
+                    height={338}
                     className="opacity-95"
                   />
                 </div>

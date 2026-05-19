@@ -15,17 +15,17 @@ export async function SiteHeader() {
     <header className="border-b border-line-soft bg-ivory/85 backdrop-blur sticky top-0 z-40">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-ink shadow-sm">
+          <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-ink shadow-sm">
             <Image
               src="/mai-logo.png"
               alt="Mai"
-              width={28}
-              height={28}
+              width={40}
+              height={42}
               className="opacity-95"
               priority
             />
           </span>
-          <span className="font-display text-2xl tracking-wide leading-none">
+          <span className="font-display text-3xl tracking-wide leading-none">
             Mai
           </span>
         </Link>

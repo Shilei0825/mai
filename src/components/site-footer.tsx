@@ -15,11 +15,11 @@ export function SiteFooter() {
             <Image
               src="/mai-logo.png"
               alt="Mai"
-              width={44}
-              height={44}
+              width={72}
+              height={76}
               className="opacity-95"
             />
-            <span className="font-display text-3xl tracking-wide">Mai</span>
+            <span className="font-display text-4xl tracking-wide">Mai</span>
           </div>
           <p className="text-ivory/70 max-w-md leading-relaxed">
             Intimate Italian tastings — wine, chocolate, and food — paired with

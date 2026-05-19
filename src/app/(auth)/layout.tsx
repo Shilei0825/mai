@@ -20,8 +20,8 @@ export default function AuthLayout({
           <Image
             src="/mai-logo.png"
             alt="Mai"
-            width={120}
-            height={120}
+            width={180}
+            height={190}
             className="mx-auto"
           />
           <p className="font-display text-4xl mt-6">Mai</p>
