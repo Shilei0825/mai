@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getHeroClips } from "@/lib/data";
 import { getDictionary, getLocale } from "@/lib/i18n";
@@ -18,6 +19,16 @@ export async function Hero() {
       </div>
       <div className="hero-entry-1 absolute top-24 md:top-28 right-6 md:right-12 text-[10px] uppercase tracking-[0.42em] text-ivory/60 text-right z-10">
         {t.hero.editionRight}
+      </div>
+
+      <div className="hero-entry-5 hidden md:block absolute bottom-10 right-10 z-10 opacity-75">
+        <Image
+          src="/mai-wordmark.png"
+          alt=""
+          width={140}
+          height={154}
+          className="w-[120px] lg:w-[150px] h-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
+        />
       </div>
 
       <div className="relative h-full flex flex-col justify-end z-10">
