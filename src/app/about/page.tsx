@@ -24,11 +24,11 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] bg-ink overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Image
-                    src="/mai-logo.png"
-                    alt="Mai"
-                    width={320}
-                    height={338}
-                    className="opacity-95"
+                    src="/mai-wordmark.png"
+                    alt="Mai — Italian Food & Wine, Tasting & Appreciation"
+                    width={420}
+                    height={460}
+                    className="opacity-95 px-6"
                   />
                 </div>
               </div>

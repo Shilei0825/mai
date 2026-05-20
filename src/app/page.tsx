@@ -5,6 +5,7 @@ import { Regioni } from "@/components/home/regioni";
 import { Upcoming } from "@/components/home/upcoming";
 import { ChefTeaser } from "@/components/home/chef-teaser";
 import { TheBasket } from "@/components/home/the-basket";
+import { BrandMark } from "@/components/home/brand-mark";
 import { Closer } from "@/components/home/closer";
 import { getChefProfile, getUpcomingEvents } from "@/lib/data";
 
@@ -28,6 +29,7 @@ export default async function Home() {
       <Upcoming events={events} />
       <ChefTeaser chef={chef} />
       <TheBasket />
+      <BrandMark />
       <Closer />
     </>
   );
